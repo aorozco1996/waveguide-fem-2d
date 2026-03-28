@@ -1,6 +1,7 @@
 import gmsh
 
-DEBUG=True
+# Set DEBUG to True to visualize the mesh in the GUI. Close the GUI to continue execution
+DEBUG=False
 
 def generate_rectangular_mesh(a, b, mesh_size):
     # Initialize Gmsh
@@ -87,10 +88,7 @@ def generate_circular_mesh(r, mesh_size):
     gmsh.model.addPhysicalGroup(2, [1], 2)
     gmsh.model.setPhysicalName(2, 2, "surface")
 
-
-
-    # %% Ahora sí se procede a crear la malla:
-
+    # Generate mesh
     gmsh.model.mesh.generate(2)
 
     # Display surfaces and nodes
