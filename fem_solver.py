@@ -53,7 +53,7 @@ def _assemble_matrices(nodes, elements):
         # Evaluate the entry for matrix A for the current element
         A_element = (1 / (4.0 * area)) * np.array([
             [b1*b1 + c1*c1, b1*b2 + c1*c2, b1*b3 + c1*c3],
-            [b2*b1 + c2*c1, b2*b2 + c2*c2, b2*b3 + c2*c3 ],
+            [b2*b1 + c2*c1, b2*b2 + c2*c2, b2*b3 + c2*c3],
             [b3*b1 + c3*c1, b3*b2 + c3*c2, b3*b3 + c3*c3]
         ])
 
@@ -87,9 +87,9 @@ def assemble_tm_matrices(nodes, elements, boundary_nodes):
 
     return A_tm, B_tm
 
-def solve_eigenvalue_problem(A, B):
+def solve_eigenvalue_problem(A, B, num_modes=3):
     # Calculate eigenvalues and eigenvectors
-    eigenvalues, eigenvectors = eigsh(A, k=3, M=B, which='SM')
+    eigenvalues, eigenvectors = eigsh(A, k=num_modes, M=B, which='SM')
 
     # Sort eigenvalues and eigenvectors in increasing order
     order = np.argsort(eigenvalues)

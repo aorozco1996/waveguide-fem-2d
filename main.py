@@ -3,7 +3,7 @@ import fem_solver
 import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
-GENERATE_MESH=False
+GENERATE_MESH=True
 
 def run_rectangular_waveguide(width, height, mesh_size):
     print('Running Rectangular Waveguide FEM simulation...')
@@ -27,25 +27,11 @@ def run_rectangular_waveguide(width, height, mesh_size):
 
     # Solve eigenvalue problems
     kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm)
-    kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te)
+    kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=5)
 
     # Plot dispersion curves
-    postprocessing.compare_cutoff_table(
-        'rectangular',
-        kc_sq_te,
-        kc_sq_tm,
-        a=width,
-        b=height,
-    )
 
-    postprocessing.plot_dispersion_curves(
-        'rectangular',
-        kc_sq_te,
-        kc_sq_tm,
-        a=width,
-        b=height,
-    )
-    # Plot modal distributions
+    # # Plot modal distributions
 
 
 def run_circular_waveguide(radius, mesh_size):
@@ -68,22 +54,22 @@ def main():
 
     run_rectangular_waveguide(width, height, mesh_size)
 
-    # # Circular waveguide
-    # radius = 10e-3
-    #
-    # run_circular_waveguide(radius, mesh_size)
-    #
-    # # Single ridge waveguide
-    # ridge_width = 0.4 * width
-    # ridge_depth = 0.4 * height
-    #
-    # run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
-    #
-    # # double ridge waveguide
-    # ridge_width = 0.4 * width
-    # ridge_depth = 0.35 * height
-    #
-    # run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
+    # Circular waveguide
+    radius = 10e-3
+
+    run_circular_waveguide(radius, mesh_size)
+
+    # Single ridge waveguide
+    ridge_width = 0.4 * width
+    ridge_depth = 0.4 * height
+
+    run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
+
+    # double ridge waveguide
+    ridge_width = 0.4 * width
+    ridge_depth = 0.35 * height
+
+    run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 import gmsh
 
 # Set DEBUG to True to visualize the mesh in the GUI. Close the GUI to continue execution
-DEBUG=False
+DEBUG=True
 
 def generate_rectangular_mesh(a, b, mesh_size):
     # Initialize Gmsh
@@ -43,11 +43,19 @@ def generate_rectangular_mesh(a, b, mesh_size):
     gmsh.model.mesh.generate(2)
 
     # Display surfaces and nodes
-    gmsh.option.setNumber('Mesh.SurfaceFaces', 1)
-    gmsh.option.setNumber('Mesh.Points', 1)
+    gmsh.fltk.initialize()
+
+    # Visualization options
+    gmsh.option.setNumber("General.Axes", 1)
+    gmsh.option.setColor("General.Background", 255, 255, 255)
+    gmsh.option.setColor("General.Foreground", 0, 0, 0)
+
+    # Export mesh image
+    gmsh.write("figures/rectangular_waveguide.png")
 
     # Save mesh to file
     gmsh.write('rectangular_waveguide.msh')
+
 
     if DEBUG:
         # Visualize mesh
@@ -92,8 +100,15 @@ def generate_circular_mesh(r, mesh_size):
     gmsh.model.mesh.generate(2)
 
     # Display surfaces and nodes
-    gmsh.option.setNumber('Mesh.SurfaceFaces', 1)
-    gmsh.option.setNumber('Mesh.Points', 1)
+    gmsh.fltk.initialize()
+
+    # Visualization options
+    gmsh.option.setNumber("General.Axes", 1)
+    gmsh.option.setColor("General.Background", 255, 255, 255)
+    gmsh.option.setColor("General.Foreground", 0, 0, 0)
+
+    # Export mesh image
+    gmsh.write("figures/circular_waveguide.png")
 
     # Save mesh to file
     gmsh.write('circular_waveguide.msh')
@@ -153,8 +168,15 @@ def generate_single_ridge_mesh(a, b, w, d, mesh_size):
     gmsh.model.mesh.generate(2)
 
     # Display surfaces and nodes
-    gmsh.option.setNumber('Mesh.SurfaceFaces', 1)
-    gmsh.option.setNumber('Mesh.Points', 1)
+    gmsh.fltk.initialize()
+
+    # Visualization options
+    gmsh.option.setNumber("General.Axes", 1)
+    gmsh.option.setColor("General.Background", 255, 255, 255)
+    gmsh.option.setColor("General.Foreground", 0, 0, 0)
+
+    # Export mesh image
+    gmsh.write("figures/single_ridge_waveguide.png")
 
     # Save mesh to file
     gmsh.write('single_ridge_waveguide.msh')
@@ -222,8 +244,15 @@ def generate_double_ridge_mesh(a, b, w, d, mesh_size):
     gmsh.model.mesh.generate(2)
 
     # Display surfaces and nodes
-    gmsh.option.setNumber('Mesh.SurfaceFaces', 1)
-    gmsh.option.setNumber('Mesh.Points', 1)
+    gmsh.fltk.initialize()
+
+    # Visualization options
+    gmsh.option.setNumber("General.Axes", 1)
+    gmsh.option.setColor("General.Background", 255, 255, 255)
+    gmsh.option.setColor("General.Foreground", 0, 0, 0)
+
+    # Export mesh image
+    gmsh.write("figures/double_ridge_waveguide.png")
 
     # Save mesh to file
     gmsh.write('double_ridge_waveguide.msh')
