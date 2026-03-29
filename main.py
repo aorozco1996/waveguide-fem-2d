@@ -20,9 +20,8 @@ def run_rectangular_waveguide(width, height, mesh_size):
     print(f'Total elements: {len(elements)}')
     print(f'Total boundary nodes: {len(boundary_nodes)}')
 
-    # print(nodes[:10])
-    # print(elements[:10])
-    # print(boundary_nodes[:10])
+    fem_solver.assemble_tm_matrices(nodes, elements, boundary_nodes)
+
 
 
 
