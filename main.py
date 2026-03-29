@@ -12,6 +12,7 @@ def run_rectangular_waveguide(width, height, mesh_size):
         print('Generating mesh...')
         meshing.generate_rectangular_mesh(width, height, mesh_size)
 
+    # Load mesh data
     nodes, elements, boundary_nodes = fem_solver.load_mesh('rectangular_waveguide.msh')
 
     print('Mesh Details')
@@ -20,9 +21,31 @@ def run_rectangular_waveguide(width, height, mesh_size):
     print(f'Total elements: {len(elements)}')
     print(f'Total boundary nodes: {len(boundary_nodes)}')
 
-    fem_solver.assemble_tm_matrices(nodes, elements, boundary_nodes)
+    # Assemble tm and te matrices
+    A_tm, B_tm = fem_solver.assemble_tm_matrices(nodes, elements, boundary_nodes)
+    A_te, B_te = fem_solver.assemble_te_matrices(nodes, elements)
 
+    # Solve eigenvalue problems
+    kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm)
+    kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te)
 
+    # Plot dispersion curves
+    postprocessing.compare_cutoff_table(
+        'rectangular',
+        kc_sq_te,
+        kc_sq_tm,
+        a=width,
+        b=height,
+    )
+
+    postprocessing.plot_dispersion_curves(
+        'rectangular',
+        kc_sq_te,
+        kc_sq_tm,
+        a=width,
+        b=height,
+    )
+    # Plot modal distributions
 
 
 def run_circular_waveguide(radius, mesh_size):

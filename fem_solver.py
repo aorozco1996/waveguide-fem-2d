@@ -81,8 +81,16 @@ def assemble_tm_matrices(nodes, elements, boundary_nodes):
     A_matrix, B_matrix = _assemble_matrices(nodes, elements)
 
     # Exclude boundary nodes for boundary condition, i.e., Ez = 0 on Gamma
-    interior_nodes = [i for i, node in enumerate(nodes) if i not in boundary_nodes]
+    interior_nodes = [i for i in range(len(nodes)) if i not in boundary_nodes]
     A_tm = A_matrix[interior_nodes, :][:, interior_nodes]
     B_tm = B_matrix[interior_nodes, :][:, interior_nodes]
 
     return A_tm, B_tm
+
+def solve_eigenvalue_problem(A, B):
+    # Calculate eigenvalues and eigenvectors
+    eigenvalues, eigenvectors = eigsh(A, k=3, M=B, which='SM')
+
+    # Sort eigenvalues and eigenvectors in increasing order
+    order = np.argsort(eigenvalues)
+    return eigenvalues[order], eigenvectors[:, order]
