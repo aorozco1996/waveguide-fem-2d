@@ -1,9 +1,11 @@
+import numpy as np
+
 import meshing
 import fem_solver
 import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
-GENERATE_MESH=True
+GENERATE_MESH=False
 
 def run_rectangular_waveguide(width, height, mesh_size):
     print('Running Rectangular Waveguide FEM simulation...')
@@ -26,12 +28,19 @@ def run_rectangular_waveguide(width, height, mesh_size):
     A_te, B_te = fem_solver.assemble_te_matrices(nodes, elements)
 
     # Solve eigenvalue problems
-    kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm)
+    kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm, num_modes=4)
     kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=5)
 
-    # Plot dispersion curves
+    # Omit degenerate modes so that there are 6 unique eigenvalues
+    kc_sq_tm_unique = kc_sq_tm[1:]
+    Ez_tm_unique = Ez_tm[1:]
+    kc_sq_te_unique = np.concatenate((kc_sq_te[1:2], kc_sq_te[3:]))
 
-    # # Plot modal distributions
+    Hz_te_unique = np.concatenate((Hz_te[1:2], Hz_te[3:]))
+    # Plot dispersion curves
+    postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, height, 'rectangular')
+
+    # Plot modal distributions
 
 
 def run_circular_waveguide(radius, mesh_size):

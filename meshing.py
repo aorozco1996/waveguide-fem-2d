@@ -1,7 +1,7 @@
 import gmsh
 
 # Set DEBUG to True to visualize the mesh in the GUI. Close the GUI to continue execution
-DEBUG=True
+DEBUG=False
 
 def generate_rectangular_mesh(a, b, mesh_size):
     # Initialize Gmsh
