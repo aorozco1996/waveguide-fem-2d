@@ -56,10 +56,11 @@ def generate_rectangular_mesh(a, b, mesh_size):
     # Save mesh to file
     gmsh.write('rectangular_waveguide.msh')
 
-
     if DEBUG:
         # Visualize mesh
         gmsh.fltk.run()
+
+    gmsh.fltk.finalize()
 
     # Finalize Gmsh
     gmsh.finalize()
@@ -116,6 +117,8 @@ def generate_circular_mesh(r, mesh_size):
     if DEBUG:
         # Visualize mesh
         gmsh.fltk.run()
+
+    gmsh.fltk.finalize()
 
     # Finalize Gmsh
     gmsh.finalize()
@@ -184,6 +187,8 @@ def generate_single_ridge_mesh(a, b, w, d, mesh_size):
     if DEBUG:
         # Visualize mesh
         gmsh.fltk.run()
+
+    gmsh.fltk.finalize()
 
     # Finalize Gmsh
     gmsh.finalize()
@@ -260,6 +265,8 @@ def generate_double_ridge_mesh(a, b, w, d, mesh_size):
     if DEBUG:
         # Visualize mesh
         gmsh.fltk.run()
+
+    gmsh.fltk.finalize()
 
     # Finalize Gmsh
     gmsh.finalize()

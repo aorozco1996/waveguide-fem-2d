@@ -5,8 +5,8 @@ import fem_solver
 import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
-# DON'T generate all meshes in a single run, seems to crash due to memory
-GENERATE_MESH=False
+# If generating meshes, click on the Gmsh window context that opens at runtime for the program to continue execution
+GENERATE_MESH=True
 
 def run_rectangular_waveguide(width, height, mesh_size):
     print('Running Rectangular Waveguide FEM simulation...')
@@ -195,6 +195,9 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm, num_modes=3)
     kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=4)
 
+    print(kc_sq_tm)
+    print(kc_sq_te)
+
     # Omit degenerate modes so that there are 6 unique eigenvalues
     kc_sq_tm_unique = kc_sq_tm
     Ez_tm_unique = Ez_tm
@@ -204,6 +207,7 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     kc_sq_te_unique = kc_sq_te[1:]
     Hz_te_unique = Hz_te[:,1:]
 
+    print(kc_sq_te_unique)
 
     # Plot dispersion curves
     # postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
