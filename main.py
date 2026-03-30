@@ -6,7 +6,7 @@ import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
 # If generating meshes, click on the Gmsh window context that opens at runtime for the program to continue execution
-GENERATE_MESH=True
+GENERATE_MESH=False
 
 def run_rectangular_waveguide(width, height, mesh_size):
     print('Running Rectangular Waveguide FEM simulation...')
@@ -152,7 +152,7 @@ def run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
 
 
     # Plot dispersion curves
-    # postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
+    postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
 
     # Plot modal distributions
 
@@ -210,7 +210,7 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     print(kc_sq_te_unique)
 
     # Plot dispersion curves
-    # postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
+    postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
 
     # Plot modal distributions
 
@@ -235,22 +235,22 @@ def main():
     width = 20e-3  # a [m]
     height = width / 2  # b = a/2
 
-    run_rectangular_waveguide(width, height, mesh_size)
+    # run_rectangular_waveguide(width, height, mesh_size)
 
     # Circular waveguide
     radius = 10e-3
 
-    run_circular_waveguide(radius, mesh_size)
+    # run_circular_waveguide(radius, mesh_size)
 
     # Single ridge waveguide
     ridge_width = 0.4 * width
-    ridge_depth = 0.4 * height
+    ridge_depth = 0.6 * height
 
     run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
 
     # double ridge waveguide
     ridge_width = 0.4 * width
-    ridge_depth = 0.25 * height
+    ridge_depth = 0.4 * height
 
     run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
 

@@ -26,7 +26,38 @@ def plot_dispersion_curves(kc_sq_tm, kc_sq_te, a, b=0, waveguide_type='rectangul
             np.sqrt((1 * np.pi / a) ** 2 + (2 * np.pi / b) ** 2),
         ])
 
-    if waveguide_type == "circular":
+        kc_all = np.concatenate((kc_te, kc_tm))
+        kc_fem_all = np.concatenate((np.sqrt(kc_sq_te), np.sqrt(kc_sq_tm)))
+        labels_all = te_labels + tm_labels
+
+        ka_min = 0.95 * np.min(kc_all * a)
+        ka_max = 2.0 * np.max(kc_all * a)
+        ka = np.linspace(ka_min, ka_max, 500)
+
+        for i in range(6):
+            beta_over_k = np.sqrt(1 - (kc_all[i] * a / ka) ** 2)
+            beta_over_k[ka < kc_all[i] * a] = np.nan
+
+            line, = plt.plot(ka, beta_over_k, label=labels_all[i])
+
+            ka_cutoff_num = kc_fem_all[i] * a
+            ka_num = np.linspace(1.02 * ka_cutoff_num, ka_max, 10)
+            beta_over_k_num = np.sqrt(1 - (ka_cutoff_num / ka_num) ** 2)
+
+            plt.plot(
+                ka_num,
+                beta_over_k_num,
+                marker="o",
+                markersize=7,
+                markerfacecolor="none",
+                markeredgecolor=line.get_color(),
+                linestyle="None"
+            )
+
+        plt.suptitle(f"Dispersion Curves for a {waveguide_type.capitalize()} Waveguide:")
+        plt.title("Analytical vs. FEM Results")
+
+    elif waveguide_type == "circular":
         te_labels = ["TE$_{11}$", "TE$_{21}$", "TE$_{31}$"]
         tm_labels = ["TM$_{01}$", "TE$_{01}$/TM$_{11}$", "TM$_{21}$"]
 
@@ -42,38 +73,80 @@ def plot_dispersion_curves(kc_sq_tm, kc_sq_te, a, b=0, waveguide_type='rectangul
             jn_zeros(2, 1)[0] / a,
         ])
 
-    kc_all = np.concatenate((kc_te, kc_tm))
-    kc_fem_all = np.concatenate((np.sqrt(kc_sq_te), np.sqrt(kc_sq_tm)))
-    labels_all = te_labels + tm_labels
+        kc_all = np.concatenate((kc_te, kc_tm))
+        kc_fem_all = np.concatenate((np.sqrt(kc_sq_te), np.sqrt(kc_sq_tm)))
+        labels_all = te_labels + tm_labels
 
-    ka_min = 0.95 * np.min(kc_all * a)
-    ka_max = 2.0 * np.max(kc_all * a)
-    ka = np.linspace(ka_min, ka_max, 500)
+        ka_min = 0.95 * np.min(kc_all * a)
+        ka_max = 2.0 * np.max(kc_all * a)
+        ka = np.linspace(ka_min, ka_max, 500)
 
-    for i in range(6):
-        beta_over_k = np.sqrt(1 - (kc_all[i] * a / ka) ** 2)
-        beta_over_k[ka < kc_all[i] * a] = np.nan
+        for i in range(6):
+            beta_over_k = np.sqrt(1 - (kc_all[i] * a / ka) ** 2)
+            beta_over_k[ka < kc_all[i] * a] = np.nan
 
-        line, = plt.plot(ka, beta_over_k, label=labels_all[i])
+            line, = plt.plot(ka, beta_over_k, label=labels_all[i])
 
-        ka_cutoff_num = kc_fem_all[i] * a
-        ka_num = np.linspace(1.02 * ka_cutoff_num, ka_max, 10)
-        beta_over_k_num = np.sqrt(1 - (ka_cutoff_num / ka_num) ** 2)
+            ka_cutoff_num = kc_fem_all[i] * a
+            ka_num = np.linspace(1.02 * ka_cutoff_num, ka_max, 10)
+            beta_over_k_num = np.sqrt(1 - (ka_cutoff_num / ka_num) ** 2)
 
-        plt.plot(
-            ka_num,
-            beta_over_k_num,
-            marker="o",
-            markersize=7,
-            markerfacecolor="none",
-            markeredgecolor=line.get_color(),
-            linestyle="None"
-        )
+            plt.plot(
+                ka_num,
+                beta_over_k_num,
+                marker="o",
+                markersize=7,
+                markerfacecolor="none",
+                markeredgecolor=line.get_color(),
+                linestyle="None"
+            )
+
+        plt.suptitle(f"Dispersion Curves for a {waveguide_type.capitalize()} Waveguide:")
+        plt.title("Analytical vs. FEM Results")
+
+    else:
+        te_labels = [
+            "Dominant TE Mode",
+            "First Higher-Order TE Mode",
+            "Second Higher-Order TE Mode",
+        ]
+        tm_labels = [
+            "Dominant TM Mode",
+            "First Higher-Order TM Mode",
+            "Second Higher-Order TM Mode",
+        ]
+
+        kc_fem_te = np.sqrt(kc_sq_te)
+        kc_fem_tm = np.sqrt(kc_sq_tm)
+
+        kc_fem_all = np.concatenate((kc_fem_te, kc_fem_tm))
+        labels_all = te_labels + tm_labels
+
+        ka_min = 0.95 * np.min(kc_fem_all * a)
+        ka_max = 2.0 * np.max(kc_fem_all * a)
+        ka_max = max(ka_max, 1.1 * ka_min)
+        ka = np.linspace(ka_min, ka_max, 500)
+
+        for i in range(len(kc_fem_all)):
+            ka_cutoff_num = kc_fem_all[i] * a
+            ka_num = np.linspace(1.02 * ka_cutoff_num, ka_max, 50)
+            beta_over_k_num = np.sqrt(1 - (ka_cutoff_num / ka_num) ** 2)
+
+            plt.plot(
+                ka_num,
+                beta_over_k_num,
+                marker="o",
+                markersize=5,
+                markerfacecolor="none",
+                linestyle="None",
+                label=labels_all[i]
+            )
+
+        plt.suptitle(f"Dispersion Curves for a {waveguide_type.replace('_', ' ').title()} Waveguide:")
+        plt.title("FEM Results")
 
     plt.xlabel(r"$k a$")
     plt.ylabel(r"$\beta / k$")
-    plt.suptitle(f"Dispersion Curves for a {waveguide_type.capitalize()} Waveguide:")
-    plt.title("Analytical vs. FEM Results")
     plt.ylim(0, 1.05)
     plt.xlim(left=0)
     plt.grid(True)
