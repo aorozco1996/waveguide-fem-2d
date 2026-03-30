@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.special import jn_zeros, jnp_zeros
+from scipy.special import jv, jn_zeros, jnp_zeros
 
 C_CONST = 299792458  # speed of light in a vacuum [m/s]
 EPS0 = 8.854187818814e-12  # permittivity of free space [F*m^-1]
@@ -83,5 +83,79 @@ def plot_dispersion_curves(kc_sq_tm, kc_sq_te, a, b=0, waveguide_type='rectangul
     plt.show()
 
 
-def plot_mode_distribution(nodes, elements, field, mode_label, value_type='real', quantity_label=None, levels=40,
-                           cmap='viridis', save_path=None):
+def plot_fem_mode_distribution(nodes, elements, field, field_label, mode_label=None):
+    if field_label == 'Ez':
+        units = 'V/m'
+        colorway = 'RdBu'
+    else:
+        units = 'H/m'
+        colorway = 'viridis'
+
+    field = field / np.max(np.abs(field))
+    plt.figure()
+    plt.tricontourf(nodes[:, 0], nodes[:, 1], elements, field, levels=40, cmap=colorway)
+    plt.colorbar(label=f'{field_label[0]}$_{field_label[1]}$ [{units}]', orientation='horizontal')
+    plt.xlabel('x [m]')
+    plt.ylabel('y [m]')
+    if mode_label is not None:
+        plt.title(f'{mode_label} Modal Field Distribution (FEM)')
+    else:
+        plt.title('Modal Field Distribution (FEM)')
+
+    plt.gca().set_aspect('equal')
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_analytical_mode_distribution(a, m, n, field_label, waveguide_type='rectangular', b=None):
+    if field_label == 'Ez':
+        units = 'V/m'
+        colorway = 'RdBu'
+        mode_str = f'TM$_{{{m}{n}}}$'
+    else:
+        units = 'H/m'
+        colorway = 'viridis'
+        mode_str = f'TE$_{{{m}{n}}}$'
+
+    plt.figure()
+
+    if waveguide_type == 'rectangular':
+        x = np.linspace(0, a, 200)
+        y = np.linspace(0, b, 100)
+        X, Y = np.meshgrid(x, y)
+
+        if field_label == 'Ez':
+            field = np.sin(m * np.pi * X / a) * np.sin(n * np.pi * Y / b)
+        else:
+            field = np.cos(m * np.pi * X / a) * np.cos(n * np.pi * Y / b)
+
+    elif waveguide_type == 'circular':
+        r = np.linspace(0, a, 100)
+        phi = np.linspace(0, 2 * np.pi, 200)
+        R, Phi = np.meshgrid(r, phi)
+
+        X = R * np.cos(Phi) + a
+        Y = R * np.sin(Phi) + a
+
+        if field_label == 'Ez':
+            p_mn = jn_zeros(m, n)[-1]
+            field = jv(m, p_mn * R / a) * np.cos(m * Phi)
+        else:
+            p_prime_mn = jnp_zeros(m, n)[-1]
+            field = jv(m, p_prime_mn * R / a) * np.cos(m * Phi)
+
+    else:
+        raise ValueError("Shape must be 'rectangular' or 'circular'")
+    # Normalize
+    field = field / np.max(np.abs(field))
+    # Plot the field
+    plt.contourf(X, Y, field, levels=40, cmap=colorway)
+
+    plt.colorbar(label=f'{field_label[0]}$_{field_label[1]}$ [{units}]', orientation='horizontal')
+    plt.xlabel('x [m]')
+    plt.ylabel('y [m]')
+    plt.title(f'{mode_str} Modal Field Distribution (Analytical)')
+
+    plt.gca().set_aspect('equal')
+    plt.tight_layout()
+    plt.show()
