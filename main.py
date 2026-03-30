@@ -5,6 +5,7 @@ import fem_solver
 import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
+# DON'T generate all meshes in a single run, seems to crash due to memory
 GENERATE_MESH=False
 
 def run_rectangular_waveguide(width, height, mesh_size):
@@ -197,6 +198,8 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     # Omit degenerate modes so that there are 6 unique eigenvalues
     kc_sq_tm_unique = kc_sq_tm
     Ez_tm_unique = Ez_tm
+
+    # TODO: check for degenerate modes or 0 eigenvalue
 
     kc_sq_te_unique = kc_sq_te[1:]
     Hz_te_unique = Hz_te[:,1:]
