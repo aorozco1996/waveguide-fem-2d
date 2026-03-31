@@ -192,25 +192,24 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     A_te, B_te = fem_solver.assemble_te_matrices(nodes, elements)
 
     # Solve eigenvalue problems
-    kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm, num_modes=3)
-    kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=4)
+    kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm, num_modes=5)
+    kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=5)
 
     print(kc_sq_tm)
     print(kc_sq_te)
 
     # Omit degenerate modes so that there are 6 unique eigenvalues
-    kc_sq_tm_unique = kc_sq_tm
-    Ez_tm_unique = Ez_tm
+    kc_sq_tm_unique = kc_sq_tm[[0,2,4]]
+    Ez_tm_unique = Ez_tm[:, [0,2,4]]
 
-    # TODO: check for degenerate modes or 0 eigenvalue
+    kc_sq_te_unique = kc_sq_te[[1,2,4]]
+    Hz_te_unique = Hz_te[:,[1,2,4]]
 
-    kc_sq_te_unique = kc_sq_te[1:]
-    Hz_te_unique = Hz_te[:,1:]
-
+    print(kc_sq_tm_unique)
     print(kc_sq_te_unique)
 
     # Plot dispersion curves
-    postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='single_ridge')
+    postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='double_ridge')
 
     # Plot modal distributions
 
@@ -235,22 +234,22 @@ def main():
     width = 20e-3  # a [m]
     height = width / 2  # b = a/2
 
-    # run_rectangular_waveguide(width, height, mesh_size)
+    run_rectangular_waveguide(width, height, mesh_size)
 
     # Circular waveguide
     radius = 10e-3
 
-    # run_circular_waveguide(radius, mesh_size)
+    run_circular_waveguide(radius, mesh_size)
 
     # Single ridge waveguide
-    ridge_width = 0.4 * width
-    ridge_depth = 0.6 * height
+    ridge_width = 0.3 * width
+    ridge_depth = 0.4 * height
 
     run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
 
     # double ridge waveguide
-    ridge_width = 0.4 * width
-    ridge_depth = 0.4 * height
+    ridge_width = 0.3 * width
+    ridge_depth = 0.35 * height
 
     run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size)
 
