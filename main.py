@@ -6,7 +6,7 @@ import postprocessing
 
 # Set GENERATE_MESH to True to re-generate the mesh. If set to False, it will try to load the existing mesh (if any)
 # If generating meshes, click on the Gmsh window context that opens at runtime for the program to continue execution
-GENERATE_MESH=True
+GENERATE_MESH=False
 
 def run_rectangular_waveguide(width, height, mesh_size):
     print('Running Rectangular Waveguide FEM simulation...')
