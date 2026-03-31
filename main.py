@@ -121,7 +121,7 @@ def run_circular_waveguide(radius, mesh_size):
 
 def run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size):
     print('Running Single Ridge Waveguide FEM simulation...')
-    print(f'Waveguide dimensions: a = {width} [m], b = {height} [m]')
+    print(f'Waveguide dimensions: a = {width} [m], b = {height} [m], w = {ridge_width} [m], d = {ridge_depth} [m]')
     if GENERATE_MESH:
         print('Generating mesh...')
         meshing.generate_single_ridge_mesh(width, height, ridge_width, ridge_depth, mesh_size)
@@ -173,7 +173,7 @@ def run_single_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
 
 def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_size):
     print('Running Double Ridge Waveguide FEM simulation...')
-    print(f'Waveguide dimensions: a = {width} [m], b = {height} [m]')
+    print(f'Waveguide dimensions: a = {width} [m], b = {height} [m], w = {ridge_width} [m], d = {ridge_depth} [m]')
     if GENERATE_MESH:
         print('Generating mesh...')
         meshing.generate_double_ridge_mesh(width, height, ridge_width, ridge_depth, mesh_size)
@@ -195,18 +195,12 @@ def run_double_ridge_waveguide(width, height, ridge_width, ridge_depth, mesh_siz
     kc_sq_tm, Ez_tm = fem_solver.solve_eigenvalue_problem(A_tm, B_tm, num_modes=5)
     kc_sq_te, Hz_te = fem_solver.solve_eigenvalue_problem(A_te, B_te, num_modes=5)
 
-    print(kc_sq_tm)
-    print(kc_sq_te)
-
     # Omit degenerate modes so that there are 6 unique eigenvalues
     kc_sq_tm_unique = kc_sq_tm[[0,2,4]]
     Ez_tm_unique = Ez_tm[:, [0,2,4]]
 
     kc_sq_te_unique = kc_sq_te[[1,2,4]]
     Hz_te_unique = Hz_te[:,[1,2,4]]
-
-    print(kc_sq_tm_unique)
-    print(kc_sq_te_unique)
 
     # Plot dispersion curves
     postprocessing.plot_dispersion_curves(kc_sq_tm_unique, kc_sq_te_unique, width, b=height, waveguide_type='double_ridge')
